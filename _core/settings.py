@@ -32,11 +32,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    ALLOWED_HOSTS += [RENDER_EXTERNAL_HOSTNAME]
 
 # Application definition
 
@@ -104,14 +105,6 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": os.getenv("POSTGRES_DB"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "127.0.0.1",
-        "PORT": 5432,
-    },
-    'sqlite3_db': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -125,13 +118,12 @@ if DATABASE_URL:
     DATABASES["default"].update(db_from_env)
     DEBUG = False
 
-STATIC_URL = "/static/"
 
-if DEBUG:  # Ambiente de desenvolvimento
-    STATIC_ROOT = os.path.join(BASE_DIR, "local_staticfiles")
-else:  # Ambiente de produção
+if not DEBUG:  
     STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = ( 
+        'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    )
 
 
 # Password validation
