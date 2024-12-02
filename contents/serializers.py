@@ -9,6 +9,3 @@ class ContentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'course': {'required': False, 'write_only': True}
         }
-
-    def create(self, validated_data):
-        return Content.objects.create(**validated_data)

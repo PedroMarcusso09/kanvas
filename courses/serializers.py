@@ -13,9 +13,3 @@ class CourseSerializer(serializers.ModelSerializer):
             'contents': {'read_only': True},
             'students_courses': {'read_only': True}
         }
-
-    def create(self, validated_data):
-        return Course.objects.create(**validated_data)
-    
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)

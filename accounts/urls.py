@@ -1,9 +1,7 @@
 from django.urls import path
-from .import views
-from rest_framework_simplejwt import views as jwt_views
-
+from .views import CreateAccountView, CustomTokenObtainPairView
 
 urlpatterns = [
-    path('accounts/', views.CreateAccountView.as_view()),
-    path('login/', jwt_views.TokenObtainPairView.as_view()),
+    path('', CreateAccountView.as_view(), name='create-account'),
+    path('login/', CustomTokenObtainPairView.as_view(), name='login'),
 ]

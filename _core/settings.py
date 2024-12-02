@@ -34,7 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS += [RENDER_EXTERNAL_HOSTNAME]
@@ -52,7 +52,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    "drf_spectacular",
+    'drf_spectacular',
 ]
 
 MY_APPS = [
@@ -102,28 +102,29 @@ WSGI_APPLICATION = '_core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB"),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('POSTGRES_HOST', default='localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', default='5432'),
     }
 }
 
-
-DATABASE_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
     db_from_env = dj_database_url.config(
         default=DATABASE_URL, conn_max_age=500, ssl_require=True
     )
-    DATABASES["default"].update(db_from_env)
+    DATABASES['default'].update(db_from_env)
     DEBUG = False
 
 
-if not DEBUG:  
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    STATICFILES_STORAGE = ( 
-        'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    )
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'locastaticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Password validation
@@ -178,8 +179,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Kanvas",
-    "DESCRIPTION": "API gerenciamento cursos e aulas",
-    "VERSION": "1.0.0",
-    "SERVER_INCLUDE_SCHEMA": False,
+    'TITLE': 'Kanvas',
+    'DESCRIPTION': 'API gerenciamento cursos e aulas',
+    'VERSION': '1.0.0',
+    'TAGS': [
+        {'name': 'Contas', 'description': 'Criação de contas e login'},
+        {'name': 'Cursos', 'description': 'Gerenciamento de cursos'},
+        {'name': 'Estudantes', 'description': 'Gerenciamento de estudantes'},
+        {'name': 'Conteúdos', 'description': 'Gerenciamento de conteúdos'},
+    ],
+    'SERVERS_INCLUDE_SCHEMA': False,
+    'DEEP_LINKING': True,
 }

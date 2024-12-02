@@ -16,18 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularSwaggerView,
-)
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from drf_spectacular.utils import extend_schema
+from accounts.views import CustomTokenObtainPairView
+from .views import api_home
+
+
+@extend_schema(exclude=True)
+class HiddenSchemaView(SpectacularAPIView):
+    pass
+
 
 urlpatterns = [
+    path('', api_home, name='api-home'),
     path('admin/', admin.site.urls),
-    path('api/', include('accounts.urls')),
-    path('api/', include('courses.urls')),
-    path("api/schema/",
-         SpectacularAPIView.as_view(), name="schema"),
-    path("api/docs/swagger-ui/",
-         SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"
-         ),
+    path('api/accounts/', include('accounts.urls')),
+    path('api/login/', CustomTokenObtainPairView.as_view(), name='login'),
+    path('api/courses/', include('courses.urls', namespace='courses')),
+    path('api/schema/', HiddenSchemaView.as_view(), name='schema'),
+    path('api/docs/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
